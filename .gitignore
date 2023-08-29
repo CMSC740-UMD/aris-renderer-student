@@ -1,0 +1,6 @@
+__pycache__/
+/scripts
+/outputs
+/data
+.DS_Store
+.vscode/launch.json
