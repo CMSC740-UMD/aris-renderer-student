@@ -18,7 +18,7 @@ class WhittedIntegrator(Integrator):
     def render(self, scene: Scene, rays_o: Tensor, rays_d: Tensor) -> Tensor:
         result = torch.zeros_like(rays_d)
 
-        # Whitted: keep track of the 1/p multiplications
+        # For Whitted: keep track of the 1/p multiplications
         throughput = torch.ones_like(rays_d)
 
         # Note: you can also start by initializing the active_indices with all indices,
@@ -32,7 +32,7 @@ class WhittedIntegrator(Integrator):
         # these are indices in the inputs, for indexing result and throughput
         active_indices = torch.nonzero(geo_out.mask)[:, 0]  # (N, 1) -> (N,)
 
-        # Whitted: we keep tracing the rays that hit specular surfaces,
+        # Whitted loop: we keep tracing the rays that hit specular surfaces,
         # until they hit a diffuse surface (so we sample an emitter),
         # or goes into the void (result is zero),
         # or is terminated by Russian-roulette (result is zero)
@@ -40,23 +40,25 @@ class WhittedIntegrator(Integrator):
             if len(active_indices) == 0:
                 break
 
-            # YOUR TASK: implement Distribution Ray Tracing
+            # YOUR TASK: Distribution Ray Tracing (DRT)
+            # DRT 1: Check if a ray hits an emitter; if so, add its contribution
 
-            # Hints (you don't have to follow this)
+            # DRT 2: Sample an emitter for all the remaining hit points
+            #   First, choose an emitter for every hit point
+            #   Then, query each emitter with the assigned points, and add their contribution
+            #   (You can find an example in emitter_check.py)
 
-            # 1. Check if a ray hits an emitter
+            # END OF DRT
 
-            # 2. Sample a point on emitters for all the remaining points
-            # First, choose an emitter for every point (see np.random.choice)
-            # Then, query each emitter with the assigned points
-            # Whitted: only process the points that hit a diffuse surface
+            # Whitted 1: change (DRT 2) code above to only points that hit a diffuse surface
+            # Whitted 2: continue trace points that hit a specular surface
+            pass
 
-            # Whitted: now, process the points that hit a specular surface
             if i_path > 3:
                 # Do Russian-roulette after at least 3 bounces
                 pass
 
-            # Whitted: remove this break
+            # Whitted 3: remove this break
             break
 
         return result
