@@ -76,8 +76,8 @@ def read_image(path: str, scale: float = 1, resample=Image.BILINEAR) -> np.ndarr
     """
     path: Path = Path(path)
     if path.suffix == ".exr":
-        img = read_openexr(str(path), "RGB")
-        if scale > 0:
+        img = read_openexr(str(path), "RGB").numpy()
+        if scale > 0 and scale != 1:
             img = scale_array(img, scale)
         return img
 
